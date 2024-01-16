@@ -62,7 +62,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
           children: [
             Container(
               width: 1.sw,
-              height: 0.25.sh,
+              height: 0.18.sh,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: <Color>[Color(0XFFff9f00), Color(0XFFff7f00)],
@@ -76,6 +76,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
                     top: BorderSide(width: 1, color: Colors.white)),
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,12 +125,28 @@ class _TransactionOverviewState extends State<TransactionOverview>
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 0.01.sw),
-                        child: IconButton(
+                        child: TextButton(
                             onPressed: () {},
-                            icon: Icon(
-                              Icons.search,
-                              size: 0.028.sh,
-                              color: Colors.white,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text("Set Goal ",
+                                    style: TextStyle(color: Colors.white)),
+                                Icon(Icons.radar_outlined),
+                              ],
+                            )),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 0.01.sw),
+                        child: TextButton(
+                            onPressed: () {},
+                            child: Row(
+                              children: [
+                                Text("Set Remainder ",
+                                    style: TextStyle(color: Colors.white)),
+                                Icon(Icons.notification_add),
+                              ],
                             )),
                       ),
                     ],
@@ -137,53 +154,45 @@ class _TransactionOverviewState extends State<TransactionOverview>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Total Amount",
-                            style: TextStyle(
-                                fontSize: 20.0.sp,
-                                color: Colors.white,
-                                fontFamily: GoogleFonts.akshar().fontFamily,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(left: 0.029.sw),
-                                child: Text(
-                                  "Rs.${stringtotalamount}",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily:
-                                          GoogleFonts.akshar().fontFamily,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 2,
-                                      fontSize: 20.0.sp),
-                                ),
-                              ),
-                              IconButton(
-                                  alignment: Alignment.topCenter,
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return EditInitialAmount(
-                                              useruid: widget.useruid);
-                                        });
-                                  },
-                                  icon: Icon(
-                                    Icons.edit,
-                                    color: Colors.white,
-                                    size: 17.0.sp,
-                                  )),
-                            ],
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(left: 0.02.sw),
+                        child: Text(
+                          "Account balance:",
+                          style: TextStyle(
+                              fontSize: 15.0.sp,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: GoogleFonts.akshar().fontFamily,
+                              letterSpacing: 1),
+                        ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 0.029.sw),
+                        child: Text(
+                          "Rs. ${stringtotalamount}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: GoogleFonts.akshar().fontFamily,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                              fontSize: 17.0.sp),
+                        ),
+                      ),
+                      IconButton(
+                          alignment: Alignment.topCenter,
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EditInitialAmount(
+                                      useruid: widget.useruid);
+                                });
+                          },
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 13.0.sp,
+                          )),
                     ],
                   ),
                   Row(
@@ -191,21 +200,23 @@ class _TransactionOverviewState extends State<TransactionOverview>
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.red.shade400,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(35),
+                          ),
                         ),
-                        height: 0.074.sh,
-                        width: 0.35.sw,
+                        height: 0.07.sh,
+                        width: 0.50.sw,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Container(
-                                child: Image.asset("assets/images/down.png",
-                                    width: 0.02.sw, color: Colors.redAccent),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
+                              child: Image.asset("assets/images/down.png",
+                                  width: 0.02.sw, color: Colors.redAccent),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
                               width: 0.07.sw,
                               height: 0.032.sh,
                             ),
@@ -215,7 +226,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
                                 Text(
                                   "Expense",
                                   style: TextStyle(
-                                      fontSize: 22.0.sp,
+                                      fontSize: 19.0.sp,
                                       color: Colors.white,
                                       fontFamily:
                                           GoogleFonts.akshar().fontFamily,
@@ -239,11 +250,12 @@ class _TransactionOverviewState extends State<TransactionOverview>
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green.shade400,
+                          borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(35)),
                         ),
-                        height: 0.074.sh,
-                        width: 0.35.sw,
+                        height: 0.070.sh,
+                        width: 0.50.sw,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
@@ -263,10 +275,10 @@ class _TransactionOverviewState extends State<TransactionOverview>
                                 Text(
                                   "Income",
                                   style: TextStyle(
-                                      fontSize: 22.0.sp,
+                                      fontSize: 19.0.sp,
                                       color: Colors.white,
                                       fontFamily:
-                                      GoogleFonts.akshar().fontFamily,
+                                          GoogleFonts.akshar().fontFamily,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 1),
                                 ),
@@ -275,7 +287,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontFamily:
-                                      GoogleFonts.akshar().fontFamily,
+                                          GoogleFonts.akshar().fontFamily,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 2,
                                       fontSize: 18.0.sp),
@@ -344,7 +356,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
             ),
             Container(
               width: 1.sw,
-              height: 0.402.sh,
+              height: 0.385.sh,
               padding: EdgeInsets.only(top: 0.01.sw, bottom: 0.01.sw),
               decoration: BoxDecoration(
                 color: Colors.white60,
@@ -473,7 +485,10 @@ class _TransactionOverviewState extends State<TransactionOverview>
   void _handleSelectedOption(String newValue) async {
     TotalExpenseService totalexpenseservice = new TotalExpenseService();
     TotalIncomeService totalincomeservice = new TotalIncomeService();
-
+    // Update the selected option
+    setState(() {
+      selectedOption = newValue;
+    });
     // Perform actions based on the selected option
     switch (selectedOption) {
       case 'Last 7 days':
@@ -483,7 +498,8 @@ class _TransactionOverviewState extends State<TransactionOverview>
             widget.useruid, 'Last 7 days');
         break;
       case 'Last 28 days':
-        totalexpenseservice.getTotalExpense(widget.useruid, 'Last 28 days');
+        totalexpensedays = await totalexpenseservice.getTotalExpense(
+            widget.useruid, 'Last 28 days');
         totalincomedays = await totalincomeservice.getTotalIncome(
             widget.useruid, 'Last 28 days');
         break;
@@ -494,11 +510,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
             widget.useruid, 'Last 90 days');
         break;
     }
-
-    // Update the selected option
-    setState(() {
-      selectedOption = newValue;
-    });
+    setState(() {});
   }
 
   void _fetchdataofselecteddate() async {

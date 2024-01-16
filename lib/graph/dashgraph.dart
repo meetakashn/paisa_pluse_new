@@ -64,7 +64,7 @@ class DashboardLineGraph {
       ),
       minX: 0,
       maxX: 11,
-      minY: -0.5,
+      minY: -1,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
@@ -128,33 +128,38 @@ class DashboardLineGraph {
       fontSize: 13,
     );
     Widget text;
-    switch (value.toInt()) {
-      case 1:
-        text = const Text(
-          'JAN',
-          style: style,
-        );
-        break;
-      case 3:
-        text = const Text('MAR', style: style);
-        break;
-      case 5:
-        text = const Text('MAY', style: style);
-        break;
-      case 7:
-        text = const Text('JULY', style: style);
-        break;
-      case 9:
-        text = const Text('SEP', style: style);
-        break;
-      case 11:
-        text = const Text('NOV', style: style);
-        break;
-      default:
-        text = const Text('', style: style);
-        break;
-    }
-
+      switch (value.toInt()) {
+        case 1:
+          text = const Text(
+            'JAN',
+            style: style,
+          );
+          break;
+        case 3:
+          text = const Text(
+            'MAR',
+            style: style,
+          );
+          break;
+        case 5:
+          text = const Text(
+            'MAY',
+            style: style,
+          );
+          break;
+        case 7:
+          text = const Text('JULY', style: style);
+          break;
+        case 9:
+          text = const Text('SEP', style: style);
+          break;
+        case 11:
+          text = const Text('NOV', style: style);
+          break;
+        default:
+          text = const Text('', style: style);
+          break;
+      }
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: text,

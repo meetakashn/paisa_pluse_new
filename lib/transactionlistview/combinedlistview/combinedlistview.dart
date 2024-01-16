@@ -135,7 +135,7 @@ class CombinedListItem extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(15.0),
-        color: isIncome ? Colors.green.shade500 : Colors.red.shade500,
+        color: isIncome ? Colors.green : Colors.red,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

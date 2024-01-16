@@ -71,7 +71,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                                   color: isIncome
                                       ? Colors.white60
                                       : Colors.white70,
-                                  fontSize: 15.0.sp,
+                                  fontSize: 11.0.sp,
                                   fontFamily: GoogleFonts.akshar().fontFamily,
                                   letterSpacing: 1)),
                         ),
@@ -80,7 +80,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                           child: Icon(
                             categoryIcon,
                             color: Colors.white,
-                            size: 16.0.sp,
+                            size: 12.0.sp,
                           ),
                         ),
                         SizedBox(
@@ -89,7 +89,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                         Text('${transaction.category}',
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16.0.sp,
+                                fontSize: 12.0.sp,
                                 fontFamily: GoogleFonts.akshar().fontFamily,
                                 letterSpacing: 2)),
                       ],
@@ -109,7 +109,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                           child: Text(
                               '${isIncome ? '+' : '-'}${transaction.amount}',
                               style: TextStyle(
-                                  fontSize: 17.0.sp,
+                                  fontSize: 13.0.sp,
                                   color:
                                       isIncome ? Colors.white : Colors.white)),
                         ),

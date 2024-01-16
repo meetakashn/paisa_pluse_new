@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:paisa_pluse_new/loginpage/forgotpassword.dart';
 import 'package:paisa_pluse_new/loginpage/register.dart';
 import 'package:paisa_pluse_new/loginpage/signin.dart';
+import 'package:paisa_pluse_new/navigationbar/categorypage/categorypage.dart';
 import 'package:paisa_pluse_new/navigationbar/dashboard.dart';
 import 'package:paisa_pluse_new/Transactionpage/transactionoverview.dart';
 import 'package:paisa_pluse_new/navigationbar/transactionmain.dart';
@@ -167,7 +168,7 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return const TransactionMain();
       case 2:
-        return const Register();
+        return CategoryPage(useruid: user!.uid,);
       case 3:
         return const ForgotPassword();
       case 4:

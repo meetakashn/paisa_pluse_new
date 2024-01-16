@@ -72,7 +72,8 @@ class TotalIncomeService {
           .collection('user')
           .doc(userUid)
           .collection('incomes')
-          .where('date', isGreaterThanOrEqualTo: startDate, isLessThanOrEqualTo: endDate)
+          .where('date',
+              isGreaterThanOrEqualTo: startDate, isLessThanOrEqualTo: endDate)
           .get();
 
 // Filter out documents with 'category' equal to 'Initial Amount'
@@ -81,7 +82,8 @@ class TotalIncomeService {
           .toList();
 
 // Calculate total income amount from filtered documents
-      int totalIncome = filteredDocs.fold(0, (total, doc) => doc['amount'] + total);
+      int totalIncome =
+          filteredDocs.fold(0, (total, doc) => doc['amount'] + total);
 
 // Calculate and return the net amount (income - expense)
       return totalIncome;
