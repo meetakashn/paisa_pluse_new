@@ -2,12 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class DashboardBarGraph {
-  Future<BarChartData> mainData(String uid) async {
+class IncomeOverviewBarGraph {
+  int lastDays = 7;
+
+  Future<BarChartData> mainData(String uid, String days) async {
     try {
+      int lastDays = 7;
+      if (days == 'Last 28 days') {
+        lastDays = 28;
+      } else if (days == 'Last 90 days') {
+        lastDays = 90;
+      }
+      this.lastDays = lastDays;
       return BarChartData(
         alignment: BarChartAlignment.start,
-        groupsSpace: 41,
+        groupsSpace: 40,
         barTouchData: BarTouchData(
           enabled: true,
           allowTouchBarBackDraw: true,
@@ -18,7 +27,7 @@ class DashboardBarGraph {
             x: 0,
             barRods: [
               BarChartRodData(
-                toY: await getTotalAmountForUtilities(uid),
+                toY: await getTotalAmountForFreelance(uid),
                 color: Colors.blue,
                 width: 32,
                 borderRadius: BorderRadius.circular(0),
@@ -29,7 +38,7 @@ class DashboardBarGraph {
             x: 1,
             barRods: [
               BarChartRodData(
-                toY: await getTotalAmountForEducation(uid),
+                toY: await getTotalAmountForSalary(uid),
                 color: Colors.red,
                 width: 33,
                 borderRadius: BorderRadius.circular(0),
@@ -40,7 +49,7 @@ class DashboardBarGraph {
             x: 2,
             barRods: [
               BarChartRodData(
-                toY: await getTotalAmountForGroceries(uid),
+                toY: await getTotalAmountForBusiness(uid),
                 color: Colors.green,
                 width: 32,
                 borderRadius: BorderRadius.circular(0),
@@ -51,7 +60,7 @@ class DashboardBarGraph {
             x: 3,
             barRods: [
               BarChartRodData(
-                toY: await getTotalAmountForShopping(uid),
+                toY: await getTotalAmountForRent(uid),
                 color: Colors.orange,
                 width: 32,
                 borderRadius: BorderRadius.circular(0),
@@ -62,7 +71,7 @@ class DashboardBarGraph {
             x: 4,
             barRods: [
               BarChartRodData(
-                toY: await getTotalAmountForHealthcare(uid),
+                toY: await getTotalAmountForInvestment(uid),
                 color: Colors.purple,
                 width: 32,
                 borderRadius: BorderRadius.circular(0),
@@ -83,7 +92,7 @@ class DashboardBarGraph {
               sideTitles: SideTitles(showTitles: false),
             )),
         minY: 0,
-        maxY: 10000,
+        maxY: this.lastDays > 28 ? 30000 : 10000,
         gridData: FlGridData(
           show: true,
           getDrawingHorizontalLine: (value) {
@@ -104,29 +113,29 @@ class DashboardBarGraph {
     }
   }
 
-  Future<double> getTotalAmountForUtilities(String uid) async {
+  Future<double> getTotalAmountForFreelance(String uid) async {
     try {
-      double utilitiesTotal = 0.0;
+      double freelanceTotal = 0.0;
 
       // Query expenses using a timestamp-based condition
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await FirebaseFirestore.instance
               .collection('user')
               .doc(uid)
-              .collection('expenses')
+              .collection('incomes')
               .get();
 
-      DateTime startDate = DateTime.now().subtract(Duration(days: 28));
+      DateTime startDate = DateTime.now().subtract(Duration(days: lastDays));
 
       querySnapshot.docs.forEach((QueryDocumentSnapshot document) {
         DateTime expenseDate = document['date'].toDate();
-        if (document['category'] == 'Utilities' &&
+        if (document['category'] == 'Freelance' &&
             expenseDate.isAfter(startDate)) {
-          utilitiesTotal += document['amount'];
+          freelanceTotal += document['amount'];
         }
       });
 
-      return utilitiesTotal;
+      return freelanceTotal;
     } catch (e) {
       // Handle exceptions or errors here
       print("Error: $e");
@@ -134,29 +143,28 @@ class DashboardBarGraph {
     }
   }
 
-  Future<double> getTotalAmountForEducation(String uid) async {
+  Future<double> getTotalAmountForSalary(String uid) async {
     try {
-      double educationTotal = 0.0;
+      double salaryTotal = 0.0;
 
       // Query expenses using a timestamp-based condition
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await FirebaseFirestore.instance
               .collection('user')
               .doc(uid)
-              .collection('expenses')
+              .collection('incomes')
               .get();
 
-      DateTime startDate = DateTime.now().subtract(Duration(days: 28));
+      DateTime startDate = DateTime.now().subtract(Duration(days: lastDays));
 
       querySnapshot.docs.forEach((QueryDocumentSnapshot document) {
         DateTime expenseDate = document['date'].toDate();
-        if (document['category'] == 'Utilities' &&
+        if (document['category'] == 'Salary' &&
             expenseDate.isAfter(startDate)) {
-          educationTotal += document['amount'];
+          salaryTotal += document['amount'];
         }
       });
-
-      return educationTotal;
+      return salaryTotal;
     } catch (e) {
       // Handle exceptions or errors here
       print("Error: $e");
@@ -164,28 +172,29 @@ class DashboardBarGraph {
     }
   }
 
-  Future<double> getTotalAmountForGroceries(String uid) async {
+  Future<double> getTotalAmountForBusiness(String uid) async {
     try {
-      double groceriesTotal = 0.0;
+      double businessTotal = 0.0;
 
       // Query expenses using a timestamp-based condition
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await FirebaseFirestore.instance
               .collection('user')
               .doc(uid)
-              .collection('expenses')
+              .collection('incomes')
               .get();
 
-      DateTime startDate = DateTime.now().subtract(Duration(days: 28));
+      DateTime startDate = DateTime.now().subtract(Duration(days: lastDays));
 
       querySnapshot.docs.forEach((QueryDocumentSnapshot document) {
         DateTime expenseDate = document['date'].toDate();
-        if (document['category'] == 'Groceries' &&
+        if (document['category'] == 'Business' &&
             expenseDate.isAfter(startDate)) {
-          groceriesTotal += document['amount'];
+          businessTotal += document['amount'];
         }
       });
-      return groceriesTotal;
+
+      return businessTotal;
     } catch (e) {
       // Handle exceptions or errors here
       print("Error: $e");
@@ -193,29 +202,28 @@ class DashboardBarGraph {
     }
   }
 
-  Future<double> getTotalAmountForShopping(String uid) async {
+  Future<double> getTotalAmountForRent(String uid) async {
     try {
-      double shoppingTotal = 0.0;
+      double rentTotal = 0.0;
 
       // Query expenses using a timestamp-based condition
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await FirebaseFirestore.instance
               .collection('user')
               .doc(uid)
-              .collection('expenses')
+              .collection('incomes')
               .get();
 
-      DateTime startDate = DateTime.now().subtract(Duration(days: 28));
+      DateTime startDate = DateTime.now().subtract(Duration(days: lastDays));
 
       querySnapshot.docs.forEach((QueryDocumentSnapshot document) {
-        DateTime expenseDate = document['date'].toDate();
-        if (document['category'] == 'Shopping' &&
-            expenseDate.isAfter(startDate)) {
-          shoppingTotal += document['amount'];
+        DateTime rentDate = document['date'].toDate();
+        if (document['category'] == 'Rent' && rentDate.isAfter(startDate)) {
+          rentTotal += document['amount'];
         }
       });
 
-      return shoppingTotal;
+      return rentTotal;
     } catch (e) {
       // Handle exceptions or errors here
       print("Error: $e");
@@ -223,27 +231,27 @@ class DashboardBarGraph {
     }
   }
 
-  Future<double> getTotalAmountForHealthcare(String uid) async {
+  Future<double> getTotalAmountForInvestment(String uid) async {
     try {
-      double healthcareTotal = 0.0;
+      double investmentTotal = 0.0;
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await FirebaseFirestore.instance
               .collection('user')
               .doc(uid)
-              .collection('expenses')
+              .collection('incomes')
               .get();
 
-      DateTime startDate = DateTime.now().subtract(Duration(days: 28));
+      DateTime startDate = DateTime.now().subtract(Duration(days: lastDays));
 
       querySnapshot.docs.forEach((QueryDocumentSnapshot document) {
         DateTime expenseDate = document['date'].toDate();
-        if (document['category'] == 'Healthcare' &&
+        if (document['category'] == 'Investments' &&
             expenseDate.isAfter(startDate)) {
-          healthcareTotal += document['amount'];
+          investmentTotal += document['amount'];
         }
       });
 
-      return healthcareTotal;
+      return investmentTotal;
     } catch (e) {
       // Handle exceptions or errors here
       print("Error: $e");
@@ -259,11 +267,11 @@ class DashboardBarGraph {
     );
     String text;
     List<String> categories = [
-      'Utilities',
-      'Education',
-      'Groceries',
-      'Shopping',
-      'Healthcare',
+      'Freelance',
+      'Salary',
+      'Business',
+      'Rent',
+      'Investments',
     ];
 
     if (value.toInt() >= 0 && value.toInt() < categories.length) {

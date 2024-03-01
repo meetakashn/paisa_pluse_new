@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:paisa_pluse_new/Transactionpage/remainderpage/setremainder.dart';
 import 'package:paisa_pluse_new/expenseswidget/expenseswidget.dart';
 import 'package:paisa_pluse_new/incomewidget/incomeaddwidget.dart';
 import 'package:paisa_pluse_new/transactionlistview/combinedlistview/combinedlistview.dart';
@@ -11,10 +12,10 @@ import 'package:paisa_pluse_new/transactionlistview/selectbydays/selectbydays.da
 import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 import '../transactionlistview/recent1transaction/recenttransactionwidget.dart';
-import '../transactionlistview/selectbydate/selectbydate.dart';
 
 class TransactionOverview extends StatefulWidget {
   String useruid = "";
+
   TransactionOverview({required this.useruid});
 
   @override
@@ -25,6 +26,9 @@ class _TransactionOverviewState extends State<TransactionOverview>
     with SingleTickerProviderStateMixin {
   TotalExpenseService totalexpenseservice = new TotalExpenseService();
   TotalIncomeService totalincomeservice = new TotalIncomeService();
+  List<Map<String, dynamic>> transactions = [];
+  List<Map<String, dynamic>> expenseList = [];
+  List<Map<String, dynamic>> incomeList = [];
   late AnimationController _animationController;
   DateTime? _selectedDate;
   String formattedDateString = "";
@@ -34,6 +38,7 @@ class _TransactionOverviewState extends State<TransactionOverview>
   String selectedOption = 'Last 28 days';
   int totalexpensedays = 0;
   int totalincomedays = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -126,24 +131,19 @@ class _TransactionOverviewState extends State<TransactionOverview>
                       Padding(
                         padding: EdgeInsets.only(left: 0.01.sw),
                         child: TextButton(
-                            onPressed: () {},
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Set Goal ",
-                                    style: TextStyle(color: Colors.white)),
-                                Icon(Icons.radar_outlined),
-                              ],
-                            )),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 0.01.sw),
-                        child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SetRemainder(
+                                      useruid: widget
+                                          .useruid); // Show the AddIncomeDialog
+                                },
+                              );
+                            },
                             child: Row(
                               children: [
-                                Text("Set Remainder ",
+                                Text("Set Reminder ",
                                     style: TextStyle(color: Colors.white)),
                                 Icon(Icons.notification_add),
                               ],
@@ -362,11 +362,57 @@ class _TransactionOverviewState extends State<TransactionOverview>
                 color: Colors.white60,
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: _selectedDate != null
-                  ? TransactionsListPage(
-                      useruid: widget.useruid,
-                      selectedDate: formattedDateString)
-                  : CombinedListPage(useruid: widget.useruid),
+              child: FutureBuilder(
+                future: _selectedDate != null
+                    ? fetchTransactionsByDate()
+                    : fetchAllTransactionData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ));
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text(
+                      'Error: ${snapshot.error}',
+                      style: TextStyle(color: Colors.white),
+                    ));
+                  } else if (!snapshot.hasData) {
+                    return Center(
+                        child: Text('Nothing to show.',
+                            style: TextStyle(color: Colors.white)));
+                  } else {
+                    return ListView.builder(
+                      itemCount: transactions.length + 1,
+                      itemBuilder: (context, index) {
+                        // Customize the ListTile based on your data structure
+                        if (index < transactions.length) {
+                          return CombinedListItem(
+                            data: transactions[index],
+                            documentId: transactions[index]['id'],
+                            useruid: widget.useruid,
+                          );
+                        } else {
+                          // Display a message when there is no more data to show
+                          return Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Text(
+                                'No more data to show',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10.0,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  }
+                },
+              ),
             ),
           ],
         ),
@@ -443,8 +489,6 @@ class _TransactionOverviewState extends State<TransactionOverview>
     setState(() {
       FocusScope.of(context).unfocus();
     });
-
-    // Format the DateTime object as needed
   }
 
   Future<DocumentSnapshot<Map<String, dynamic>>> getUserDocument(
@@ -523,5 +567,103 @@ class _TransactionOverviewState extends State<TransactionOverview>
     totalincomedays =
         await totalincomeservice.getTotalIncome(widget.useruid, 'Last 28 days');
     setState(() {});
+  }
+
+  //Fetching all the expense and income by date in combined
+  Future<List<Map<String, dynamic>>> fetchTransactionsByDate() async {
+    try {
+      if (_selectedDate != null) {
+        DateTime selectedDateTime =
+            DateFormat('MMMM d, yyyy').parse(formattedDateString);
+
+        QuerySnapshot<Map<String, dynamic>> expenseSnapshot =
+            await FirebaseFirestore.instance
+                .collection('user')
+                .doc(widget.useruid)
+                .collection('expenses')
+                .where('date',
+                    isGreaterThanOrEqualTo:
+                        Timestamp.fromDate(selectedDateTime.toUtc()))
+                .where('date',
+                    isLessThan: Timestamp.fromDate(
+                        _selectedDate!.add(Duration(days: 1)).toUtc()))
+                .get();
+
+        QuerySnapshot<Map<String, dynamic>> incomeSnapshot =
+            await FirebaseFirestore
+                .instance
+                .collection('user')
+                .doc(widget.useruid)
+                .collection('incomes')
+                .where(
+                    'date',
+                    isGreaterThanOrEqualTo: Timestamp.fromDate(selectedDateTime
+                        .toUtc()))
+                .where(
+                    'date',
+                    isLessThan: Timestamp.fromDate(
+                        _selectedDate!.add(Duration(days: 1)).toUtc()))
+                .get();
+
+        List<Map<String, dynamic>> expenses = expenseSnapshot.docs
+            .map((doc) => {...doc.data(), 'id': doc.id})
+            .toList();
+
+        List<Map<String, dynamic>> incomes = incomeSnapshot.docs
+            .map((doc) => {...doc.data(), 'id': doc.id})
+            .toList();
+
+        transactions = [...expenses, ...incomes];
+        transactions.sort((a, b) =>
+            (b['date'] as Timestamp).compareTo(a['date'] as Timestamp));
+
+        return transactions;
+      } else {
+        return []; // Return an empty list if _selectedDate is null
+      }
+    } catch (e) {
+      print('Error fetching transactions by date: $e');
+      return [];
+    }
+  }
+
+  //Fetching all the expense and income in combined
+  Future<List<Map<String, dynamic>>> fetchAllTransactionData() async {
+    try {
+      // Retrieve expense data
+      QuerySnapshot<Map<String, dynamic>> expenseSnapshot =
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(widget.useruid)
+              .collection('expenses')
+              .orderBy('date', descending: true)
+              .get();
+      List<Map<String, dynamic>> expenseList = expenseSnapshot.docs
+          .map((doc) => {...doc.data(), 'id': doc.id})
+          .toList();
+
+      // Retrieve income data
+      QuerySnapshot<Map<String, dynamic>> incomeSnapshot =
+          await FirebaseFirestore.instance
+              .collection('user')
+              .doc(widget.useruid)
+              .collection('incomes')
+              .orderBy('date', descending: true)
+              .get();
+      List<Map<String, dynamic>> incomeList = incomeSnapshot.docs
+          .map((doc) => {...doc.data(), 'id': doc.id})
+          .toList();
+
+      // Combine and sort the data
+      transactions = [...expenseList, ...incomeList];
+      transactions.sort(
+        (a, b) => (b['date'] as Timestamp).compareTo(a['date'] as Timestamp),
+      );
+
+      return transactions;
+    } catch (e) {
+      print('Error fetching all transaction data: $e');
+      return [];
+    }
   }
 }

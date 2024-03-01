@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +11,7 @@ import '../../incomewidget/editincomewidget.dart';
 class TransactionsListPage extends StatefulWidget {
   final String selectedDate;
   final String useruid;
+
   TransactionsListPage({required this.useruid, required this.selectedDate});
 
   @override
@@ -22,10 +23,10 @@ class _TransactionsListPageState extends State<TransactionsListPage> {
   List<Map<String, dynamic>> expenseList = [];
   List<Map<String, dynamic>> incomeList = [];
   late Future<void> fetchDataFuture;
+
   @override
   void initState() {
     super.initState();
-    print(widget.selectedDate);
     fetchDataFuture = _fetchTransactions();
   }
 
@@ -33,11 +34,11 @@ class _TransactionsListPageState extends State<TransactionsListPage> {
     // Convert formatted date string to DateTime
     DateTime selectedDateTime =
         DateFormat('MMMM d, yyyy').parse(widget.selectedDate);
-    print(Timestamp.fromDate(selectedDateTime));
+
     QuerySnapshot<Map<String, dynamic>> expenseSnapshot =
         await FirebaseFirestore.instance
             .collection('user')
-            .doc(widget.useruid) // Replace with your actual user UID
+            .doc(widget.useruid)
             .collection('expenses')
             .where('date',
                 isGreaterThanOrEqualTo:
@@ -46,17 +47,11 @@ class _TransactionsListPageState extends State<TransactionsListPage> {
                 isLessThan: Timestamp.fromDate(
                     selectedDateTime.add(Duration(days: 1)).toUtc()))
             .get();
-    expenseList = expenseSnapshot.docs.map((doc) {
-      return {
-        'id': doc.id,
-        ...doc.data()
-      }; // Add 'id' field to store document ID
-    }).toList();
-    // Fetch income data
+
     QuerySnapshot<Map<String, dynamic>> incomeSnapshot = await FirebaseFirestore
         .instance
         .collection('user')
-        .doc(widget.useruid) // Replace with your actual user UID
+        .doc(widget.useruid)
         .collection('incomes')
         .where('date',
             isGreaterThanOrEqualTo:
@@ -65,16 +60,11 @@ class _TransactionsListPageState extends State<TransactionsListPage> {
             isLessThan: Timestamp.fromDate(
                 selectedDateTime.add(Duration(days: 1)).toUtc()))
         .get();
-    incomeList = incomeSnapshot.docs.map((doc) {
-      return {
-        'id': doc.id,
-        ...doc.data()
-      }; // Add 'id' field to store document ID
-    }).toList();
-    // Combine and sort the data
+
     List<Map<String, dynamic>> expenses = expenseSnapshot.docs
         .map((doc) => {...doc.data(), 'id': doc.id})
         .toList();
+
     List<Map<String, dynamic>> incomes = incomeSnapshot.docs
         .map((doc) => {...doc.data(), 'id': doc.id})
         .toList();

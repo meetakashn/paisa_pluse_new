@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -9,9 +9,9 @@ import '../../expenseswidget/editexpensewidget.dart';
 import '../../incomewidget/editincomewidget.dart';
 
 class CombinedListPage extends StatefulWidget {
-  String useruid;
+  final String useruid;
 
-  CombinedListPage({required this.useruid});
+  const CombinedListPage({super.key, required this.useruid});
 
   @override
   _CombinedListPageState createState() => _CombinedListPageState();
@@ -22,6 +22,7 @@ class _CombinedListPageState extends State<CombinedListPage> {
   List<Map<String, dynamic>> expenseList = [];
   List<Map<String, dynamic>> incomeList = [];
   late Future<void> fetchDataFuture;
+
   @override
   void initState() {
     super.initState();
@@ -91,13 +92,30 @@ class _CombinedListPageState extends State<CombinedListPage> {
           // Display the ListView when data is available
           return ListView.builder(
             padding: EdgeInsets.all(0.01.sw),
-            itemCount: combinedList.length,
+            itemCount: combinedList.length + 1,
             itemBuilder: (context, index) {
-              return CombinedListItem(
-                data: combinedList[index],
-                documentId: combinedList[index]['id'],
-                useruid: widget.useruid,
-              );
+              if (index < combinedList.length) {
+                return CombinedListItem(
+                  data: combinedList[index],
+                  documentId: combinedList[index]['id'],
+                  useruid: widget.useruid,
+                );
+              } else {
+                // Display a message when there is no more data to show
+                return Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      'No more data to show',
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                );
+              }
             },
           );
         }
@@ -110,6 +128,7 @@ class CombinedListItem extends StatelessWidget {
   final Map<String, dynamic> data;
   final String documentId;
   final String useruid;
+
   CombinedListItem({
     required this.data,
     required this.documentId,
@@ -129,9 +148,9 @@ class CombinedListItem extends StatelessWidget {
         Icons.category; // Default icon if not found
     return Container(
       width: 1.sw,
-      height: 0.15.sh,
+      height: 0.11.sh,
       margin: EdgeInsets.only(
-          left: 0.015.sw, right: 0.020.sw, bottom: 0.01.sw, top: 0.01.sw),
+          left: 0.015.sw, right: 0.020.sw, bottom: 0.005.sw, top: 0.01.sw),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black),
         borderRadius: BorderRadius.circular(15.0),
@@ -141,22 +160,52 @@ class CombinedListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
                 padding: EdgeInsets.only(
-                  right:
-                      data['category'] == 'Initial Amount' ? 0.21.sw : 0.0.sw,
-                  bottom: data['category'] == 'Initial Amount' ? 0.04.sw : 0,
-                  top: data['category'] == 'Initial Amount' ? 0.04.sw : 0,
-                ),
-                child: Text(
-                  "${formattedDate}",
-                  style: TextStyle(color: Colors.white70, fontSize: 11.0.sp),
-                ),
+                    left: 0.02.sw,
+                    top: data['category'] == 'Initial Amount' ? 0.015.sh : 0,
+                    bottom:
+                        data['category'] == 'Initial Amount' ? 0.004.sh : 0),
+                child: Text(isIncome ? "Received from:" : "Paid for:",
+                    style: TextStyle(
+                        color: isIncome ? Colors.white60 : Colors.white70,
+                        fontSize: 15.0.sp,
+                        fontFamily: GoogleFonts.akshar().fontFamily,
+                        letterSpacing: 1)),
               ),
               Padding(
-                  padding: EdgeInsets.only(left: 0.33.sw),
+                padding: EdgeInsets.only(
+                    left: 0.02.sw,
+                    top: data['category'] == 'Initial Amount' ? 0.015.sh : 0,
+                    bottom:
+                        data['category'] == 'Initial Amount' ? 0.004.sh : 0),
+                child: Icon(
+                  categoryIcon,
+                  color: Colors.white,
+                  size: 16.0.sp,
+                ),
+              ),
+              SizedBox(
+                width: 0.011.sw,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: data['category'] == 'Initial Amount' ? 0.015.sh : 0,
+                    bottom:
+                        data['category'] == 'Initial Amount' ? 0.004.sh : 0),
+                child: Text('${data['category']}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0.sp,
+                        fontFamily: GoogleFonts.akshar().fontFamily,
+                        letterSpacing: 2)),
+              ),
+              Padding(
+                  padding: EdgeInsets.only(
+                    left: 0.05.sw,
+                  ),
                   child: data['category'] == 'Initial Amount'
                       ? null
                       : IconButton(
@@ -211,36 +260,6 @@ class CombinedListItem extends StatelessWidget {
             ],
           ),
           Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 0.02.sw),
-                child: Text(isIncome ? "Received from:" : "Paid for:",
-                    style: TextStyle(
-                        color: isIncome ? Colors.white60 : Colors.white70,
-                        fontSize: 15.0.sp,
-                        fontFamily: GoogleFonts.akshar().fontFamily,
-                        letterSpacing: 1)),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 0.02.sw),
-                child: Icon(
-                  categoryIcon,
-                  color: Colors.white,
-                  size: 16.0.sp,
-                ),
-              ),
-              SizedBox(
-                width: 0.011.sw,
-              ),
-              Text('${data['category']}',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0.sp,
-                      fontFamily: GoogleFonts.akshar().fontFamily,
-                      letterSpacing: 2)),
-            ],
-          ),
-          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
@@ -249,6 +268,10 @@ class CombinedListItem extends StatelessWidget {
                   '${data['paymentmethod']}',
                   style: TextStyle(color: Colors.white),
                 ),
+              ),
+              Text(
+                "(${formattedDate})",
+                style: TextStyle(color: Colors.white70, fontSize: 11.0.sp),
               ),
               Padding(
                 padding: EdgeInsets.only(right: 0.05.sw),
@@ -259,12 +282,17 @@ class CombinedListItem extends StatelessWidget {
               ),
             ],
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 0.02.sw),
-            child: Text(
-              'Note: ${data['note']}',
-              style: TextStyle(color: Colors.white, fontSize: 12.0.sp),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 0.02.sw),
+                child: Text(
+                  'Note: ${data['note']}',
+                  style: TextStyle(color: Colors.white, fontSize: 12.0.sp),
+                ),
+              ),
+            ],
           ),
         ],
       ),

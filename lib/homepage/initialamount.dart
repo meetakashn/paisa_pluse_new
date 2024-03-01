@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:paisa_pluse_new/homepage/homepage.dart';
 import 'package:paisa_pluse_new/utils/routes.dart';
 
 class Initialamount extends StatefulWidget {
@@ -20,6 +19,7 @@ class _InitialamountState extends State<Initialamount> {
   bool button = false;
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -76,12 +76,12 @@ class _InitialamountState extends State<Initialamount> {
                         letterSpacing: 2,
                         color: Colors.white60),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.orange),
+                      borderSide: const BorderSide(color: Colors.orange),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(width: 1))),
+                        borderSide: const BorderSide(width: 1))),
               ),
             ),
             Text(
@@ -107,13 +107,20 @@ class _InitialamountState extends State<Initialamount> {
                           context: context,
                           barrierDismissible: false,
                           builder: (BuildContext context) {
-                            return Center(
+                            return const Center(
                               child: CircularProgressIndicator(),
                             );
                           },
                         );
                         storeinitialamount();
+                        setState(() {
+                          HomePage.initialpageindex=0;
+                          HomePage.page=0;
+                        });
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white70,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -129,16 +136,13 @@ class _InitialamountState extends State<Initialamount> {
                           ),
                         ],
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white70,
-                      ),
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
             )
           ],
         ),
       ),
-      backgroundColor: Color(0xFF003366),
+      backgroundColor: const Color(0xFF003366),
     );
   }
 
@@ -149,11 +153,11 @@ class _InitialamountState extends State<Initialamount> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           buildKeyboardRow(['1', '2', '3']),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           buildKeyboardRow(['4', '5', '6']),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           buildKeyboardRow(['7', '8', '9']),
-          SizedBox(height: 10.0),
+          const SizedBox(height: 10.0),
           buildKeyboardRow(['', '0', '<']),
         ],
       ),
@@ -191,7 +195,7 @@ class _InitialamountState extends State<Initialamount> {
         alignment: Alignment.center,
         child: Text(
           key,
-          style: TextStyle(fontSize: 20.0, color: Colors.white),
+          style: const TextStyle(fontSize: 20.0, color: Colors.white),
         ),
       ),
     );
@@ -214,7 +218,7 @@ class _InitialamountState extends State<Initialamount> {
     amount = int.tryParse(pinController.text)!;
     // Update the button state
     setState(() {
-      if (amount != null && amount >= 500) {
+      if (amount >= 500) {
         button = true;
       } else {
         button = false;

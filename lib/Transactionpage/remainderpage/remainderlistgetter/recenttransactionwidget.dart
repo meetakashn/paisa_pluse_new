@@ -1,47 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paisa_pluse_new/transactionlistview/recent1transaction/transactiondatamodel.dart';
-import 'package:paisa_pluse_new/transactionlistview/recent1transaction/transactionservice.dart';
+import 'package:paisa_pluse_new/Transactionpage/remainderpage/remainderlistgetter/transactionservice.dart';
+import 'package:paisa_pluse_new/transactionlistview/recent5transaction/transactiondatamodel.dart';
 
-class RecentTransactionsWidget extends StatelessWidget {
+class RemainderListDash extends StatelessWidget {
   final String userUid;
 
-  RecentTransactionsWidget({required this.userUid});
+  RemainderListDash({required this.userUid});
 
-  final RecentTransactionService transactionService =
-      RecentTransactionService();
+  final TransactionRemainderService transactionService =
+      TransactionRemainderService();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: transactionService.getRecentTransactions(userUid),
-      builder: (context, AsyncSnapshot<List<RecentTransactionModel>> snapshot) {
+      builder: (context, AsyncSnapshot<List<TransactionModel>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-              child: CircularProgressIndicator(
-            color: Colors.white,
-          ));
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(
-              child: Text(
-            'No recent transactions.',
-            style: TextStyle(color: Colors.white),
-          ));
+          return const Center(child: Text('No recent reminders.'));
         } else {
           return ListView.builder(
-            itemCount: snapshot.data!.length,
+            itemCount: snapshot.data!.length + 1,
             itemBuilder: (context, index) {
-              RecentTransactionModel transaction = snapshot.data![index];
-              bool isIncome = transaction.type == 'income';
-              IconData categoryIcon =
-                  categoryIcons[transaction.category] ?? Icons.category;
-              return Center(
-                child: Container(
+              if (index < snapshot.data!.length) {
+                TransactionModel transaction = snapshot.data![index];
+                bool isIncome = transaction.type == 'income';
+                IconData categoryIcon =
+                    categoryIcons[transaction.category] ?? Icons.category;
+                return Container(
                   width: 1.sw,
-                  height: 0.11.sh,
+                  height: 0.095.sh,
+                  margin: EdgeInsets.only(
+                      left: 0.022.sw,
+                      right: 0.022.sw,
+                      top: 0.01.sw,
+                      bottom: 0.01.sw),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(15.0),
@@ -69,12 +67,12 @@ class RecentTransactionsWidget extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.only(left: 0.02.sw),
                             child: Text(
-                                isIncome ? "Received from:" : "Paid for:",
+                                isIncome ? "Credit alert:" : "Debit alert:",
                                 style: TextStyle(
                                     color: isIncome
                                         ? Colors.white60
                                         : Colors.white70,
-                                    fontSize: 15.0.sp,
+                                    fontSize: 11.0.sp,
                                     fontFamily: GoogleFonts.akshar().fontFamily,
                                     letterSpacing: 1)),
                           ),
@@ -83,7 +81,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                             child: Icon(
                               categoryIcon,
                               color: Colors.white,
-                              size: 16.0.sp,
+                              size: 12.0.sp,
                             ),
                           ),
                           SizedBox(
@@ -92,7 +90,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                           Text('${transaction.category}',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16.0.sp,
+                                  fontSize: 12.0.sp,
                                   fontFamily: GoogleFonts.akshar().fontFamily,
                                   letterSpacing: 2)),
                         ],
@@ -104,7 +102,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                             padding: EdgeInsets.only(left: 0.02.sw),
                             child: Text(
                               '${transaction.paymentMethod}',
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                           Padding(
@@ -112,7 +110,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                             child: Text(
                                 '${isIncome ? '+' : '-'}${transaction.amount}',
                                 style: TextStyle(
-                                    fontSize: 17.0.sp,
+                                    fontSize: 13.0.sp,
                                     color: isIncome
                                         ? Colors.white
                                         : Colors.white)),
@@ -124,15 +122,30 @@ class RecentTransactionsWidget extends StatelessWidget {
                         child: Text(
                           'Note: ${transaction.notes}',
                           style:
-                              TextStyle(color: Colors.white, fontSize: 10.0.sp),
+                              TextStyle(color: Colors.white, fontSize: 12.0.sp),
                         ),
                       ),
 
                       // Add more fields based on your data structure
                     ],
                   ),
-                ),
-              );
+                );
+              } else {
+                // Display a message when there is no more data to show
+                return const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      'No more reminders to show',
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                );
+              }
             },
           );
         }

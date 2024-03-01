@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:paisa_pluse_new/Transactionpage/expenseoverview/expenseoverview.dart';
+import 'package:paisa_pluse_new/Transactionpage/incomeoverview/incomeoverview.dart';
 import 'package:paisa_pluse_new/Transactionpage/transactionoverview.dart';
-import 'package:paisa_pluse_new/loginpage/register.dart';
-import 'package:paisa_pluse_new/loginpage/signin.dart';
-import 'package:paisa_pluse_new/useraccountpage/profileaccount.dart';
 import 'package:paisa_pluse_new/utils/routes.dart';
 
 class TransactionMain extends StatefulWidget {
@@ -22,6 +21,7 @@ class _TransactionMainState extends State<TransactionMain> {
   int _selectedIndex = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -85,9 +85,9 @@ class _TransactionMainState extends State<TransactionMain> {
                       useruid: user!.uid,
                     );
               } else if (index == 1) {
-                builder = (context) => Register();
+                builder = (context) => IncomeOverview(useruid: user!.uid);
               } else if (index == 2) {
-                builder = (context) => SignIn();
+                builder = (context) => ExpenseOverview(useruid: user!.uid);
               }
             });
             _navigatorKey.currentState?.pushReplacementNamed(route);

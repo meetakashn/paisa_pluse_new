@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:paisa_pluse_new/loginpage/forgotpassword.dart';
-import 'package:paisa_pluse_new/loginpage/register.dart';
 import 'package:paisa_pluse_new/loginpage/signin.dart';
+import 'package:paisa_pluse_new/navigationbar/budgetplanner/budgetplanner.dart';
 import 'package:paisa_pluse_new/navigationbar/categorypage/categorypage.dart';
 import 'package:paisa_pluse_new/navigationbar/dashboard.dart';
-import 'package:paisa_pluse_new/Transactionpage/transactionoverview.dart';
 import 'package:paisa_pluse_new/navigationbar/transactionmain.dart';
-import '../firebase/userdatacall.dart';
+
 import '../utils/routes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
   static int initialpageindex = 0;
   static int page = 0;
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -49,8 +50,17 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           backgroundColor: const Color(0xFF003366),
           elevation: 1,
-          toolbarHeight: 0.05.sh, // Set the toolbar height
+          toolbarHeight: 0.05.sh,
+          // Set the toolbar height
           centerTitle: true,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, MyRoutes.accountpage);
+              },
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.white,
+              )) ,
           title: Padding(
             padding: EdgeInsets.only(top: 0.003.sh),
             child: RichText(
@@ -74,16 +84,6 @@ class _HomePageState extends State<HomePage> {
               ]),
             ),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, MyRoutes.profilepage);
-                },
-                icon: const Icon(
-                  Icons.account_circle_sharp,
-                  color: Colors.white,
-                )),
-          ],
         ),
         bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
@@ -122,10 +122,10 @@ class _HomePageState extends State<HomePage> {
             ),
             CurvedNavigationBarItem(
               child: const Icon(
-                Icons.savings,
+                Icons.calculate,
                 color: Colors.white,
               ),
-              label: 'Savings',
+              label: 'Budget',
               labelStyle: TextStyle(
                   color: Colors.black,
                   fontFamily: GoogleFonts.akshar().fontFamily),
@@ -168,9 +168,11 @@ class _HomePageState extends State<HomePage> {
       case 1:
         return const TransactionMain();
       case 2:
-        return CategoryPage(useruid: user!.uid,);
+        return CategoryPage(
+          useruid: user!.uid,
+        );
       case 3:
-        return const ForgotPassword();
+        return BudgetPlanner(useruid: user!.uid,);
       case 4:
         return const SignIn();
       default:

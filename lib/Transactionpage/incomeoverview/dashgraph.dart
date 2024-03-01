@@ -2,26 +2,18 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DashboardLineGraph {
-  List<Map<String, dynamic>> expenseData = [];
+class IncomeOverviewLineGraph {
+  List<Map<String, dynamic>> IncomeData = [];
 
-  LineChartData mainData(List<Map<String, dynamic>> expenseData) {
-    List<FlSpot> expenseSpots = [];
-
-    // Sort expenses by date
-    expenseData.sort((a, b) => a['date'].compareTo(b['date']));
-    // Calculate the start date dynamically
-    DateTime startDate = DateTime.now().subtract(const Duration(days: 10));
-    // Filter expenses for the last numberOfDays
-    List<Map<String, dynamic>> lastNDaysExpenses = expenseData
-        .where((expense) => expense['date'].toDate().isAfter(startDate))
-        .toList();
-    this.expenseData = lastNDaysExpenses;
-    for (int i = 0; i < lastNDaysExpenses.length; i++) {
-      DateTime expenseDate = lastNDaysExpenses[i]['date'].toDate();
-      double amount = lastNDaysExpenses[i]['amount'] / 1000;
-      expenseSpots.add(FlSpot(i.toDouble(), amount));
-    }
+  LineChartData mainData(List<Map<String, dynamic>> IncomeData) {
+    this.IncomeData = IncomeData;
+    IncomeData.sort((a, b) => a['date'].toDate().compareTo(b['date'].toDate()));
+    List<FlSpot> IncomeSpots = [];
+    IncomeSpots = IncomeData.asMap().entries.map((entry) {
+      DateTime currentDate = entry.value['date'].toDate();
+      double amount = entry.value['amount'] / 1000;
+      return FlSpot(entry.key.toDouble(), amount);
+    }).toList();
 
     return LineChartData(
       borderData: FlBorderData(
@@ -68,14 +60,14 @@ class DashboardLineGraph {
         ),
       ),
       minX: 0,
-      maxX: lastNDaysExpenses.length.toDouble() < 5
+      maxX: IncomeSpots.length.toDouble() < 5
           ? 5
-          : lastNDaysExpenses.length.toDouble() - 1,
+          : IncomeSpots.length.toDouble() - 1,
       minY: 0,
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: expenseSpots,
+          spots: IncomeSpots,
           isCurved: true,
           show: true,
           gradient: const RadialGradient(colors: <Color>[
@@ -145,14 +137,16 @@ class DashboardLineGraph {
     }
     return Text(text, style: style, textAlign: TextAlign.center);
   }
+
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     int index = value.toInt();
-    if (index < 0 || index >= expenseData.length) {
+    if (index < 0 || index >= IncomeData.length) {
       return Container(); // Handle out-of-bounds index
     }
 
-    DateTime currentDate = expenseData[index]['date'].toDate();
+    DateTime currentDate = IncomeData[index]['date'].toDate();
     String day = DateFormat('dd/MM/yy').format(currentDate);
+
     return SideTitleWidget(
       axisSide: meta.axisSide,
       child: Text(
@@ -160,10 +154,9 @@ class DashboardLineGraph {
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
-          fontSize: expenseData.length >= 10 ? 6 : 8,
+          fontSize: IncomeData.length >= 10 ? 6 : 8,
         ),
       ),
     );
   }
-
 }

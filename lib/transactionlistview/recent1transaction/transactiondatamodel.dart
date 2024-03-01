@@ -6,6 +6,7 @@ class RecentTransactionModel {
   final String notes;
   final String paymentMethod;
   final String type;
+
   RecentTransactionModel({
     required this.amount,
     required this.category,

@@ -6,6 +6,7 @@ class TransactionModel {
   final String notes;
   final String paymentMethod;
   final String type;
+
   TransactionModel({
     required this.amount,
     required this.category,
@@ -14,6 +15,5 @@ class TransactionModel {
     required this.paymentMethod,
     required this.type,
     required this.sampledate,
-
   });
 }

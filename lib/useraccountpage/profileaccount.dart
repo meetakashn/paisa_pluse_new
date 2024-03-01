@@ -29,6 +29,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
   String? _uploadedImageUrl;
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -40,61 +41,44 @@ class _ProfileAccountState extends State<ProfileAccount> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF003366),
+      backgroundColor: const Color(0xFF003366),
       appBar: AppBar(
-        backgroundColor: Color(0xFF003366),
+        backgroundColor: const Color(0xFF003366),
+        elevation: 1,
+        toolbarHeight: 0.05.sh,
+        // Set the toolbar height
+        centerTitle: true,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_rounded,
-            size: 0.032.sh,
-            color: Colors.white,
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, MyRoutes.accountpage);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
+        title: Padding(
+          padding: EdgeInsets.only(top: 0.003.sh),
+          child: RichText(
+            text: TextSpan(children: <TextSpan>[
+              TextSpan(
+                text: "Paisa",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28.0.sp,
+                    fontFamily: GoogleFonts.akshar().fontFamily,
+                    fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: " Pulse",
+                style: TextStyle(
+                    color: Colors.orange,
+                    fontSize: 28.0.sp,
+                    fontFamily: GoogleFonts.akshar().fontFamily,
+                    fontWeight: FontWeight.bold),
+              )
+            ]),
           ),
-          onPressed: () {
-            HomePage.initialpageindex = 0;
-            HomePage.page = 0;
-            Navigator.pushReplacementNamed(context, MyRoutes.homepage);
-          },
         ),
-        title: Text(
-          "Profile",
-          style: TextStyle(
-              color: Colors.white, fontFamily: GoogleFonts.lato().fontFamily),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () async {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Logout'),
-                      content: Text('Are you sure you want to logout?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('Cancel'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: Text('Logout'),
-                          onPressed: () async {
-                            await FirebaseAuth.instance.signOut();
-                            Navigator.pushNamedAndRemoveUntil(context,
-                                MyRoutes.signingpage, (route) => false);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              icon: Icon(
-                Icons.logout,
-                color: Colors.white,
-                size: 0.032.sh,
-              )),
-        ],
       ),
       body: PopScope(
         canPop: false,
@@ -102,7 +86,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
           if (didPop) {
             return;
           }
-          Navigator.pushReplacementNamed(context, MyRoutes.homepage);
+          Navigator.pushReplacementNamed(context, MyRoutes.accountpage);
         },
         child: SingleChildScrollView(
           child: SafeArea(
@@ -121,6 +105,11 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                 child: Container(
                                   height: 0.041.sh,
                                   width: 0.09.sw,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1),
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: Colors.blueAccent,
+                                  ),
                                   child: Center(
                                     child: IconButton(
                                       icon: Icon(Icons.camera_alt,
@@ -130,11 +119,6 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                       },
                                     ),
                                   ),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(width: 1),
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: Colors.blueAccent,
-                                  ),
                                 ),
                               ),
                             ],
@@ -142,7 +126,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                         : Container(
                             width: 1.sw,
                             height: 0.15.sh,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                                 shape: BoxShape.circle, color: Colors.white70),
                             child: Stack(
                               alignment: Alignment.center,
@@ -154,6 +138,11 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                   child: Container(
                                     height: 0.045.sh,
                                     width: 0.09.sw,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 1),
+                                      borderRadius: BorderRadius.circular(100),
+                                      color: Colors.blueAccent,
+                                    ),
                                     child: Center(
                                       child: IconButton(
                                         icon: Icon(Icons.camera_alt,
@@ -163,11 +152,6 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                           _pickImage();
                                         },
                                       ),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(width: 1),
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: Colors.blueAccent,
                                     ),
                                   ),
                                 ),
@@ -190,7 +174,8 @@ class _ProfileAccountState extends State<ProfileAccount> {
                             children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    '  \' ${usernametext.text.toString()} \' ', // Second word
+                                    '  \' ${usernametext.text.toString()} \' ',
+                                // Second word
                                 style: TextStyle(
                                   color: Colors.red, // Color of the second word
                                   fontSize:
@@ -209,12 +194,12 @@ class _ProfileAccountState extends State<ProfileAccount> {
                       height: 0.02.sh,
                     ),
                     Align(
+                        alignment: Alignment.topLeft,
                         child: Text("  Username",
                             style: TextStyle(
                                 fontSize: 15.0.sp,
                                 color: Colors.white,
-                                fontFamily: GoogleFonts.lato().fontFamily)),
-                        alignment: Alignment.topLeft),
+                                fontFamily: GoogleFonts.lato().fontFamily))),
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -230,7 +215,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                               padding: EdgeInsets.only(left: 0.02.sw),
                               child: TextFormField(
                                 cursorColor: Colors.white,
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                                 controller: usernametext,
                                 enabled: userbool,
                                 focusNode: _usernameFocus,
@@ -246,7 +231,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                   usernametext.text = value;
                                   setState(() {});
                                 },
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   counterText: "",
                                   border: InputBorder.none,
                                 ),
@@ -259,11 +244,11 @@ class _ProfileAccountState extends State<ProfileAccount> {
                                   userbool = true;
                                   buttonbool = true;
                                 });
-                                Future.delayed(Duration(milliseconds: 50), () {
+                                Future.delayed(const Duration(milliseconds: 50), () {
                                   _usernameFocus.requestFocus();
                                 });
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.edit_rounded,
                                 color: Colors.orange,
                               )),
@@ -274,12 +259,12 @@ class _ProfileAccountState extends State<ProfileAccount> {
                       height: 0.02.sh,
                     ),
                     Align(
+                        alignment: Alignment.topLeft,
                         child: Text("  Email",
                             style: TextStyle(
                                 fontSize: 15.0.sp,
                                 color: Colors.white,
-                                fontFamily: GoogleFonts.lato().fontFamily)),
-                        alignment: Alignment.topLeft),
+                                fontFamily: GoogleFonts.lato().fontFamily))),
                     Container(
                       decoration: BoxDecoration(
                         border: Border.all(width: 1, color: Colors.white60),
@@ -292,10 +277,10 @@ class _ProfileAccountState extends State<ProfileAccount> {
                             child: Padding(
                               padding: EdgeInsets.only(left: 0.02.sw),
                               child: TextFormField(
-                                style: TextStyle(color: Colors.white54),
+                                style: const TextStyle(color: Colors.white54),
                                 controller: emailaddresstext,
                                 enabled: false,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   border: InputBorder.none,
                                 ),
                               ),
@@ -315,7 +300,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                           final scaffold = ScaffoldMessenger.of(context);
                           if (usernametext.text.toString().isEmpty) {
                             scaffold.showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 duration: Duration(seconds: 2),
                                 backgroundColor: Colors.red,
                                 content: Text("Field should not be empty"),
@@ -325,7 +310,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                           // Check if the string has more than 5 characters
                           else if (usernametext.text.toString().length <= 5) {
                             scaffold.showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 duration: Duration(seconds: 2),
                                 backgroundColor: Colors.red,
                                 content: Text(
@@ -338,7 +323,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                           else if (!RegExp(r'^[a-zA-Z0-9]+$')
                               .hasMatch(usernametext.text.toString())) {
                             scaffold.showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 duration: Duration(seconds: 2),
                                 backgroundColor: Colors.red,
                                 content: Text(
@@ -349,17 +334,17 @@ class _ProfileAccountState extends State<ProfileAccount> {
                             storeUserinfo();
                           }
                         },
-                        child: Text(
-                          "Update",
-                          style:
-                              TextStyle(fontSize: 18.0.sp, color: Colors.white),
-                        ),
                         style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 buttonbool ? Colors.green : Colors.red,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                side: BorderSide(width: 1))),
+                                side: const BorderSide(width: 1))),
+                        child: Text(
+                          "Update",
+                          style:
+                              TextStyle(fontSize: 18.0.sp, color: Colors.white),
+                        ),
                       ),
                     ),
                     TextButton(
@@ -367,7 +352,7 @@ class _ProfileAccountState extends State<ProfileAccount> {
                           Navigator.pushReplacementNamed(
                               context, MyRoutes.aboutuspage);
                         },
-                        child: Text(
+                        child: const Text(
                           "About us",
                           style: TextStyle(color: Colors.orangeAccent),
                         )),

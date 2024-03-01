@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +12,7 @@ class EditExpenseTransactionDialog extends StatefulWidget {
   final String useruid;
   final Map<String, dynamic> transactionData;
   final String documentId;
+
   EditExpenseTransactionDialog({
     required this.useruid,
     required this.transactionData,
@@ -39,6 +39,7 @@ class _EditExpenseTransactionDialogState
 
   // for verification
   int currentexpense = 0;
+
   @override
   void initState() {
     // TODO: implement initState

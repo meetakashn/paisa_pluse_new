@@ -8,7 +8,9 @@ import '../../utils/routes.dart';
 
 class EditInitialAmount extends StatefulWidget {
   String useruid = "";
+
   EditInitialAmount({required this.useruid});
+
   @override
   State<EditInitialAmount> createState() => _EditInitialAmountState();
 }
@@ -16,6 +18,8 @@ class EditInitialAmount extends StatefulWidget {
 class _EditInitialAmountState extends State<EditInitialAmount> {
   int amount = 0;
   String docid = "";
+  DateTime? currentDate;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -120,6 +124,8 @@ class _EditInitialAmountState extends State<EditInitialAmount> {
       if (querySnapshot.docs.isNotEmpty) {
         // If documents are found, return the document ID of the first one
         docid = querySnapshot.docs.first.id;
+        Timestamp timestamp = querySnapshot.docs.first['date'];
+        currentDate = timestamp.toDate();
       } else {
         // No initial amount document found
         return null;
@@ -153,17 +159,17 @@ class _EditInitialAmountState extends State<EditInitialAmount> {
         .update({
       'amount': amount,
       'category': 'Initial Amount',
-      'date': Timestamp.now(),
+      'date': currentDate,
       'note': 'Initial amount entry',
       'paymentmethod': 'online payment',
       'type': 'income',
       // Add other necessary fields
-    }).then((value) => () {
-              setState(() {
-                HomePage.initialpageindex = 1;
-                HomePage.page = 1;
-              });
-            });
+    }).then((value) {
+      setState(() {
+        HomePage.initialpageindex = 1;
+        HomePage.page = 1;
+      });
+    });
     Navigator.pushReplacementNamed(context, MyRoutes.homepage);
   }
 }

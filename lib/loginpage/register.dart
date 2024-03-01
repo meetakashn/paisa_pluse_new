@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../connectivitycheck.dart';
 import '../utils/routes.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
+
   static String uid = "";
+
   @override
   State<Register> createState() => _RegisterState();
 }
@@ -25,6 +26,7 @@ class _RegisterState extends State<Register> {
   String emailaddress = "";
   String password = "";
   String username = "";
+
   @override
   void initState() {
     // TODO: implement initState

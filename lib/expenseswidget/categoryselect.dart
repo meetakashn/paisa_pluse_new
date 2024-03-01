@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class CategorySelectionDialog extends StatelessWidget {
   final IconData selectedCategoryIcon;
+
   CategorySelectionDialog({required this.selectedCategoryIcon});
 
   // Map of category icons
@@ -18,6 +19,7 @@ class CategorySelectionDialog extends StatelessWidget {
     'Miscellaneous': Icons.category,
     'Education': Icons.book,
   };
+
   @override
   Widget build(BuildContext context) {
     return Dialog(

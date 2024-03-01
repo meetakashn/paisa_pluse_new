@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:paisa_pluse_new/Transactionpage/transactionoverview.dart';
 import 'package:paisa_pluse_new/expenseswidget/categoryselect.dart';
 import 'package:paisa_pluse_new/homepage/homepage.dart';
-import 'package:paisa_pluse_new/navigationbar/transactionmain.dart';
 import 'package:paisa_pluse_new/utils/routes.dart';
 
 class ExpensesWidget extends StatefulWidget {
   String useruid = "";
+
   ExpensesWidget({required this.useruid});
 
   @override

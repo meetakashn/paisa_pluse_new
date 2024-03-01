@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class IncomeCategorySelectionDialog extends StatelessWidget {
   final IconData selectedCategoryIcon;
+
   IncomeCategorySelectionDialog({required this.selectedCategoryIcon});
 
   // Map of category icons
@@ -16,6 +17,7 @@ class IncomeCategorySelectionDialog extends StatelessWidget {
     'Refunds': Icons.refresh,
     'Other': Icons.category,
   };
+
   @override
   Widget build(BuildContext context) {
     return Dialog(

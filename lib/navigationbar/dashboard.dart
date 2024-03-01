@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:paisa_pluse_new/graph/dashbargraph.dart';
 import 'package:paisa_pluse_new/graph/dashgraph.dart';
-import 'package:paisa_pluse_new/homepage/homepage.dart';
 import 'package:paisa_pluse_new/transactionlistview/recent5transaction/recenttransactionwidget.dart';
 import 'package:paisa_pluse_new/utils/routes.dart';
-import 'package:intl/intl.dart';
 
+import '../Transactionpage/remainderpage/remainderlistgetter/recenttransactionwidget.dart';
 import '../fetchingdatafirebase/fetchingexpensecollection.dart';
 import '../transactionlistview/selectbydays/selectbydays.dart';
 
@@ -24,7 +24,7 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   DashboardLineGraph dashboardGraph = new DashboardLineGraph();
-  DashboardBarGraph dashboardbargraph = new DashboardBarGraph();
+
   final FirebaseAuth auth = FirebaseAuth.instance;
   User? user;
   List<Map<String, dynamic>> expenseData = [];
@@ -35,7 +35,7 @@ class _DashBoardState extends State<DashBoard> {
   String totalincome = "";
   String totalexpense = "";
   int? amount;
-
+  DashboardBarGraph dashboardbargraph = new DashboardBarGraph();
   @override
   void initState() {
     // TODO: implement initState
@@ -322,9 +322,9 @@ class _DashBoardState extends State<DashBoard> {
                       width: 0.95.sw,
                       height: 0.356.sh,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                          color: Colors.white70,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.white)),
                       child: RecentTransactionsWidget(
                         userUid: user!.uid,
                       )),
@@ -332,7 +332,7 @@ class _DashBoardState extends State<DashBoard> {
                     height: 0.01.sh,
                   ),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
@@ -346,28 +346,60 @@ class _DashBoardState extends State<DashBoard> {
                               fontFamily: GoogleFonts.akshar().fontFamily),
                         ),
                       ),
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: 0.0165.sh, right: 0.019.sw),
+                        child: Text(
+                          "Last 10 days",
+                          style: TextStyle(
+                              color: Colors.white60,
+                              fontSize: 15.0.sp,
+                              fontFamily: GoogleFonts.akshar().fontFamily),
+                        ),
+                      ),
                     ],
                   ),
                   Container(
                     width: 0.95.sw,
                     height: 0.31.sh,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(colors: <Color>[
+                      /*gradient: const LinearGradient(colors: <Color>[
                         Color(0xFF002147),
                         Color(0xFF002366)
-                      ]),
+                      ]),*/
+                      color: Colors.white70,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(width: 1, color: Colors.white),
                     ),
                     child: Padding(
                       padding: EdgeInsets.only(top: 0.018.sh, right: 17),
-                      child: LineChart(
-                        dashboardGraph.mainData(expenseData),
+                      child: FutureBuilder<void>(
+                        // Set the future to null since we don't need to return anything
+                        future: fetchExpenseData(user!.uid),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // Display a circular progress indicator while data is being fetched
+                            return Center(
+                                child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ));
+                          } else if (snapshot.hasError) {
+                            // Handle errors
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if(!snapshot.hasData){return Center(child: Text("No data found for Last 10 Days"),);}else {
+                            // Data fetched successfully, display your LineChart
+                            return LineChart(
+                              dashboardGraph.mainData(expenseData),
+                            );
+                          }
+                        },
                       ),
                     ),
                   ),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
@@ -381,22 +413,55 @@ class _DashBoardState extends State<DashBoard> {
                               fontFamily: GoogleFonts.akshar().fontFamily),
                         ),
                       ),
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: 0.0165.sh, right: 0.019.sw),
+                        child: Text(
+                          "Last 28 days",
+                          style: TextStyle(
+                              color: Colors.white60,
+                              fontSize: 15.0.sp,
+                              fontFamily: GoogleFonts.akshar().fontFamily),
+                        ),
+                      ),
                     ],
                   ),
                   Container(
                     width: 0.95.sw,
                     height: 0.31.sh,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: <Color>[
+                      color: Colors.white70,
+                      /*   gradient: LinearGradient(colors: <Color>[
                         Color(0xFFfdfd96),
                         Color(0xFFfffacd)
-                      ]),
+                      ]),*/
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(width: 1, color: Colors.deepOrange),
+                      border: Border.all(width: 1, color: Colors.white),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.only(top: 0.01.sh, right: 0.04.sw),
-                      child: BarChart(dashboardbargraph.mainData(user!.uid)),
+                      padding: EdgeInsets.only(top: 0.01.sh, right: 0.03.sw),
+                      child: FutureBuilder<BarChartData>(
+                        future: DashboardBarGraph().mainData(user!.uid),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            // While the future is still running, show a loading indicator
+                            return Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors.black));
+                          } else if (snapshot.hasError) {
+                            // If there was an error in the future, show an error message
+                            return Center(
+                                child: Text("Error: ${snapshot.error}"));
+                          } else if (!snapshot.hasData) {
+                            // If the future completed successfully but did not return data, handle it here
+                            return Center(child: Text("No data available"));
+                          } else {
+                            // If the future completed successfully and returned data, build your UI with the data
+                            return BarChart(snapshot.data!);
+                          }
+                        },
+                      ),
                     ),
                   ),
                   Row(
@@ -407,7 +472,7 @@ class _DashBoardState extends State<DashBoard> {
                         padding: EdgeInsets.only(
                             top: 0.015.sh, left: 0.015.sw, bottom: 0.001.sh),
                         child: Text(
-                          "Remainders",
+                          "Reminders",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 17.0.sp,
@@ -422,59 +487,25 @@ class _DashBoardState extends State<DashBoard> {
                       width: 0.95.sw,
                       height: 0.28.sh,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: <Color>[
+                        color: Colors.white70,
+                        /* gradient: LinearGradient(colors: <Color>[
                           Color(0xFF75754),
                           Color(0xFF6445454)
-                        ]),
+                        ]),*/
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(width: 1, color: Colors.white),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.only(top: 0.01.sh, right: 0.04.sw),
-                        child: ListView(),
+                        padding: EdgeInsets.only(top: 0.005.sh),
+                        child: RemainderListDash(userUid: user!.uid),
                       ),
                     ),
                     onTap: () {
                       Navigator.pushReplacementNamed(
-                          context, MyRoutes.profilepage);
+                          context, MyRoutes.reminderpage);
                     },
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 0.015.sh, left: 0.015.sw, bottom: 0.001.sh),
-                        child: Text(
-                          "Your Goals",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17.0.sp,
-                              fontFamily: GoogleFonts.akshar().fontFamily),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: 0.95.sw,
-                    height: 0.28.sh,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: <Color>[
-                        Color(0xFFffcc00),
-                        Color(0xFF967117)
-                      ]),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(width: 1, color: Colors.white),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 0.01.sh, right: 0.04.sw),
-                      child: ListView(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
+                  SizedBox(height: 0.01.sh),
                 ],
               ),
             ],

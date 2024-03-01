@@ -8,6 +8,7 @@ class DeleteIncomeExpense extends StatefulWidget {
   final String useruid;
   final Map<String, dynamic> transactionData;
   final String documentId;
+
   DeleteIncomeExpense({
     required this.useruid,
     required this.transactionData,
@@ -20,6 +21,7 @@ class DeleteIncomeExpense extends StatefulWidget {
 
 class _DeleteIncomeExpenseState extends State<DeleteIncomeExpense> {
   bool _isDeleting = false;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

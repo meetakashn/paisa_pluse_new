@@ -1,21 +1,22 @@
 {
   "project_info": {
-    "project_number": "",
-    "project_id": "",
-    "storage_bucket": ""
+    "project_number": "215223285297",
+    "firebase_url": "https://paisapulse-7ab21-default-rtdb.firebaseio.com",
+    "project_id": "paisapulse-7ab21",
+    "storage_bucket": "paisapulse-7ab21.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "",
+        "mobilesdk_app_id": "1:215223285297:android:76305534bc403e13668710",
         "android_client_info": {
-          "package_name": ""
+          "package_name": "com.example.paisa_pluse_new"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": ""
+          "current_key": "AIzaSyCvm3LpnMIG-Vw1J2D60wXtu9dmFFWiVPI"
         }
       ],
       "services": {

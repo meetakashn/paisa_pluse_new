@@ -15,9 +15,11 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController emailaddresstext = TextEditingController();
+
   //final auth = FirebaseAuth.instance;
   String emailaddress = "";
   bool state = false;
+
   @override
   void initState() {
     // TODO: implement initState

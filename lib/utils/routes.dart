@@ -9,4 +9,7 @@ class MyRoutes {
   static String transactionmain = "/transactionmain";
   static String aboutuspage = "/aboutuspage";
   static String initialamountpage = "/initialammountpage";
+  static String accountpage = "/accountpage";
+  static String reminderpage = "/reminderpage";
+  static String helpuspage = "/helpuspage";
 }

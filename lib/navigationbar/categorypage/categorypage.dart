@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:paisa_pluse_new/navigationbar/categorypage/expensecategorypage.dart';
 import 'package:paisa_pluse_new/navigationbar/categorypage/incomecategorypage.dart';
-import '../../loginpage/register.dart';
+
 import '../../utils/routes.dart';
 
 class CategoryPage extends StatefulWidget {
-  String useruid="";
+  String useruid = "";
+
   CategoryPage({required this.useruid});
 
   @override
@@ -17,9 +17,10 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   late GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   late WidgetBuilder builder = (context) => IncomeCatPage(
-    useruid: widget.useruid,
-  ); // Declare as nullable
+        useruid: widget.useruid,
+      ); // Declare as nullable
   int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +38,7 @@ class _CategoryPageState extends State<CategoryPage> {
               ],
             ),
             decoration: BoxDecoration(
-              color:const Color(0xFF003366),
+              color: const Color(0xFF003366),
             ),
           ),
           Expanded(
@@ -55,6 +56,7 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
     );
   }
+
   Widget buildNavItem(int index, String title, String route) {
     return Padding(
       padding: EdgeInsets.all(0.007.sw),
@@ -67,8 +69,8 @@ class _CategoryPageState extends State<CategoryPage> {
               _selectedIndex = index;
               if (index == 0) {
                 builder = (context) => IncomeCatPage(
-                  useruid: widget.useruid,
-                );
+                      useruid: widget.useruid,
+                    );
               } else if (index == 1) {
                 builder = (context) => ExpenseCatPage(useruid: widget.useruid);
               }
@@ -92,14 +94,10 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
         ),
         decoration: BoxDecoration(
-          color: _selectedIndex == index
-              ? Colors.blue
-              : Colors.white54,
+          color: _selectedIndex == index ? Colors.blue : Colors.white54,
           borderRadius: BorderRadius.circular(50),
         ),
       ),
     );
   }
 }
-
-
